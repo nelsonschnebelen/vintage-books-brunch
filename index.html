@@ -9,6 +9,7 @@
   <meta property="og:description" content="A hidden literary speakeasy in Kaimuki. Brunch served Saturday & Sunday, 10AM–2PM.">
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://www.vintagebookshawaii.com/brunch">
+  <link rel="icon" href="vb-logo.png" type="image/png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600&family=IM+Fell+English+SC&family=IM+Fell+English:ital@0;1&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
@@ -99,13 +100,16 @@
       border-bottom: 1px solid rgba(184,142,58,0.25);
     }
     .topbar-mark {
-      font-family: 'IM Fell English SC', serif;
-      font-size: 18px;
-      letter-spacing: 5px;
-      color: var(--parchment-light);
+      display: inline-flex;
+      align-items: center;
       text-decoration: none;
+      line-height: 0;
     }
-    .topbar-mark span { color: var(--brass-bright); font-style: italic; letter-spacing: 1px; text-transform: lowercase; font-family: 'IM Fell English', serif; }
+    .topbar-mark img {
+      height: 38px;
+      width: auto;
+      display: block;
+    }
     .topbar-cta {
       font-family: 'Inter', sans-serif;
       font-size: 11px;
@@ -893,8 +897,8 @@
 
     /* ─── MOBILE ADJUSTMENTS ─── */
     @media (max-width: 600px) {
-      .topbar { padding: 14px 18px; }
-      .topbar-mark { font-size: 14px; letter-spacing: 4px; }
+      .topbar { padding: 12px 18px; }
+      .topbar-mark img { height: 30px; }
       .topbar-cta { padding: 7px 14px; font-size: 10px; letter-spacing: 2px; }
       .bookplate { padding: 50px 24px 40px; }
       .bookplate::before, .bookplate::after,
@@ -910,7 +914,7 @@
 
   <!-- ─── TOP BAR ─── -->
   <nav class="topbar">
-    <a href="https://www.vintagebookshawaii.com/" class="topbar-mark">Vintage <span>books</span></a>
+    <a href="https://www.vintagebookshawaii.com/" class="topbar-mark" aria-label="Vintage Books"><img src="vb-logo-cream.png" alt="Vintage Books"></a>
     <a href="https://www.opentable.com/booking/restref/availability?rid=1461943&amp;restref=1461943&amp;lang=en-US&amp;color=1&amp;r3uid=cfe&amp;dark=false&amp;partysize=2&amp;datetime=2026-04-30T19%3A00" class="topbar-cta" onclick="if(typeof fbq!=='undefined')fbq('track','Lead',{content_name:'Top Nav CTA'});">Reserve</a>
   </nav>
 
