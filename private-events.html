@@ -986,9 +986,12 @@
       </div>
 
       <div>
-        <form class="inquiry" id="inquiryForm" name="private-events" method="POST" data-netlify="true" netlify-honeypot="bot-field">
-          <input type="hidden" name="form-name" value="private-events">
-          <p class="hidden"><label>Don&rsquo;t fill this out: <input name="bot-field"></label></p>
+        <!-- Submissions are emailed to Sherene via FormSubmit (works on GitHub Pages, no server needed) -->
+        <form class="inquiry" id="inquiryForm" action="https://formsubmit.co/sherene@vintagebookshawaii.com" method="POST">
+          <input type="hidden" name="_subject" value="New private event inquiry (website)">
+          <input type="hidden" name="_template" value="table">
+          <input type="hidden" name="_captcha" value="false">
+          <p class="hidden"><label>Don&rsquo;t fill this out: <input name="_honey" tabindex="-1" autocomplete="off"></label></p>
           <input type="hidden" name="estimate" id="fEstimate">
 
           <div><label for="fName">Full name</label><input id="fName" name="name" type="text" autocomplete="name" required></div>
@@ -1250,24 +1253,34 @@
     $('inquiryForm').addEventListener('submit', function (e) {
       e.preventDefault();
       var form = e.target;
-      var body = new URLSearchParams(new FormData(form)).toString();
+      var data = Object.fromEntries(new FormData(form));
+      if (data._honey) return;
+      data._subject = 'Private event inquiry: ' + data.occasion + ', ' + data.date + ' (' + data.guests + ' guests)';
+      data._replyto = data.email;
+      var btn = form.querySelector('button[type="submit"]');
+      btn.disabled = true; btn.textContent = 'Sending\u2026';
       var done = function () {
         form.style.display = 'none';
         $('formThanks').style.display = 'block';
         if (typeof fbq !== 'undefined') fbq('track', 'Lead', { content_name: 'Private Events Inquiry', content_category: 'Private Events' });
       };
-      fetch('/', { method: 'POST', headers: { 'Content-Type': 'application/x-www-form-urlencoded' }, body: body })
-        .then(function (r) { if (!r.ok) throw new Error(r.status); done(); })
+      fetch('https://formsubmit.co/ajax/sherene@vintagebookshawaii.com', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+        body: JSON.stringify(data)
+      })
+        .then(function (r) { return r.json(); })
+        .then(function (r) { if (String(r.success) !== 'true') throw new Error(r.message); done(); })
         .catch(function () {
-          // Not on Netlify (or offline): fall back to an email to Sherene
-          var d = Object.fromEntries(new FormData(form));
-          var text = ['Name: ' + d.name, 'Company: ' + (d.company || ''), 'Email: ' + d.email, 'Phone: ' + d.phone,
-            'Date: ' + d.date, 'Guests: ' + d.guests, 'Occasion: ' + d.occasion, 'Space: ' + d.space,
-            'Dietary: ' + (d.dietary || ''), 'Estimate: ' + d.estimate, '', d.notes || ''].join('\n');
+          // Service unreachable: fall back to the visitor's own email app
+          var text = ['Name: ' + data.name, 'Company: ' + (data.company || ''), 'Email: ' + data.email, 'Phone: ' + data.phone,
+            'Date: ' + data.date, 'Guests: ' + data.guests, 'Occasion: ' + data.occasion, 'Space: ' + data.space,
+            'Dietary: ' + (data.dietary || ''), 'Estimate: ' + data.estimate, '', data.notes || ''].join('\n');
           window.location.href = 'mailto:sherene@vintagebookshawaii.com?subject=' +
-            encodeURIComponent('Private event inquiry: ' + d.occasion + ', ' + d.date) + '&body=' + encodeURIComponent(text);
+            encodeURIComponent(data._subject) + '&body=' + encodeURIComponent(text);
           done();
         });
+    });
     });
 
     // Open the calendar on the holiday season when we're before it
